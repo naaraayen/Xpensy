@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:xpensy/models/transaction.dart';
 import 'package:xpensy/widgets/bar_chart.dart';
+import 'package:xpensy/widgets/neumorphic_container.dart';
 
 // ignore: must_be_immutable
 class Chart extends StatelessWidget {
@@ -42,13 +43,13 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: _totalSpending != 0.0
-                ? BarChart(
-                    groupedTxValues: _groupedTxValues, getHeight: _getHeight)
-                : const Center(
-                    child: Text('Add transactions to make graph visible'))));
+    return NeumorphicContainer(
+      color: Colors.grey.shade200,
+        padding: const EdgeInsets.all(10),
+        child: _totalSpending != 0.0
+            ? BarChart(
+                groupedTxValues: _groupedTxValues, getHeight: _getHeight)
+            : const Center(
+                child: Text('Add transactions to make graph visible')));
   }
 }

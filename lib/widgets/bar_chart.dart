@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xpensy/widgets/neumorphic_container.dart';
 
 // ignore: must_be_immutable
 class BarChart extends StatelessWidget {
@@ -17,32 +18,29 @@ class BarChart extends StatelessWidget {
               fit: FlexFit.tight,
               child: Column(
                 children: [
-                  Container(
+                  SizedBox(
                       height: constraints.maxHeight * 0.08,
                       child: FittedBox(
                           child: Text('Rs${value['amount'].toString()}'))),
                   SizedBox(
                     height: constraints.maxHeight * 0.05,
                   ),
-                  Container(
+                  SizedBox(
                     height: constraints.maxHeight * 0.74,
                     width: 25,
                     child: Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(25)),
+                        NeumorphicContainer(
+                          color: Colors.grey.shade300,
+                          borderRadius: 25,
                         ),
                         FractionallySizedBox(
                           heightFactor: getHeight(
                               double.parse(value['amount'].toString())),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColorDark,
-                                borderRadius: BorderRadius.circular(25)),
-                          ),
+                          child: NeumorphicContainer(
+                            color: Colors.grey.shade400,
+                          )
                         ),
                       ],
                     ),
@@ -50,7 +48,7 @@ class BarChart extends StatelessWidget {
                   SizedBox(
                     height: constraints.maxHeight * 0.05,
                   ),
-                  Container(
+                  SizedBox(
                       height: constraints.maxHeight * 0.08,
                       child: Text(value['day'].toString()))
                 ],

@@ -16,9 +16,10 @@ class Xpensy extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Xpensy',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.purple,
-          colorScheme: ColorScheme.fromSwatch(accentColor: Colors.teal)),
+          primarySwatch: Colors.blueGrey,
+          colorScheme: ColorScheme.fromSwatch(accentColor: Colors.grey.shade300)),
       home: const HomePage(),
     );
   }
@@ -122,7 +123,8 @@ class _HomePageState extends State<HomePage> {
         height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.7,
         child: TransactionList(_tx, _removeTx));
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorLight,
+      backgroundColor: Colors.blueGrey.shade200,
+      //Theme.of(context).primaryColorLight,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
@@ -132,10 +134,13 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
           child: SingleChildScrollView(
         child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8,8,8,0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           if (isLandscape) ..._buildLandscapeContent(mediaQuery, txList),
           if (!isLandscape) ..._buildPortaitContent(mediaQuery, txList)
         ]),
+            ),
       )),
     );
   }
