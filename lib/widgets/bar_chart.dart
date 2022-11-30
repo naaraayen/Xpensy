@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xpensy/widgets/neumorphic_container.dart';
+import '../widgets/neumorphic_container.dart';
 
 // ignore: must_be_immutable
 class BarChart extends StatelessWidget {

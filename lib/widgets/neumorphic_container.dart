@@ -26,7 +26,7 @@ class NeumorphicContainer extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade400,
-              offset: Offset(12, 12),
+              offset: const Offset(12, 12),
               blurRadius: 18,
               spreadRadius: 1,
             ),

@@ -1,26 +1,36 @@
 import 'package:flutter/material.dart';
-import './transaction_item.dart';
-import 'package:xpensy/models/transaction.dart';
+import '../provider/transaction.dart';
+import '../widgets/transaction_item.dart' as ti;
 
 // ignore: must_be_immutable
 class TransactionList extends StatelessWidget {
-  final List<Transaction> tx;
-  final Function removeTx;
-  const TransactionList(this.tx, this.removeTx, {Key? key}) : super(key: key);
+  final List<TransactionItem> tx;
+  const TransactionList(this.tx, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return tx.isNotEmpty
         ? ListView.builder(
             itemBuilder: ((context, index) {
-              return TransactionItem(
+              return ti.TransactionItem(
                 tx: tx,
-                removeTx: removeTx,
                 index: index,
               );
             }),
             itemCount: tx.length,
           )
-        : const Center(child: Text('No transactions found'));
+        : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 175,
+              width: 175,
+              child: Image.asset('assets/illustrations/empty_list.png', )),
+              const SizedBox(height: 10),
+            const Text('No transactions found'),
+          ],
+        );
   }
 }

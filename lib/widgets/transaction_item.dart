@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:xpensy/models/transaction.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:xpensy/widgets/neumorphic_container.dart';
+import '../provider/transaction.dart' as pti;
+import '../provider/transaction.dart';
+import '../widgets/neumorphic_container.dart';
 
 // ignore: must_be_immutable
 class TransactionItem extends StatelessWidget {
@@ -9,14 +11,13 @@ class TransactionItem extends StatelessWidget {
     Key? key,
     required this.index,
     required this.tx,
-    required this.removeTx,
   }) : super(key: key);
   int index;
-  final List<Transaction> tx;
-  final Function removeTx;
+  final List<pti.TransactionItem> tx;
 
   @override
   Widget build(BuildContext context) {
+    final txData = Provider.of<Transaction>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: NeumorphicContainer(
@@ -45,7 +46,7 @@ class TransactionItem extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              removeTx(index);
+              txData.removeTx(index);
             },
           ),
         ),

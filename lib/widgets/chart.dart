@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:xpensy/models/transaction.dart';
-import 'package:xpensy/widgets/bar_chart.dart';
-import 'package:xpensy/widgets/neumorphic_container.dart';
+import '../provider/transaction.dart';
+import '../widgets/bar_chart.dart';
+import '../widgets/neumorphic_container.dart';
 
 // ignore: must_be_immutable
 class Chart extends StatelessWidget {
-  List<Transaction> recentTransactions;
+  List<TransactionItem> recentTransactions;
   Chart({Key? key, required this.recentTransactions}) : super(key: key);
 
   List<Map<String, Object>> get _groupedTxValues {
@@ -44,11 +44,10 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NeumorphicContainer(
-      color: Colors.grey.shade200,
+        color: Colors.grey.shade200,
         padding: const EdgeInsets.all(10),
         child: _totalSpending != 0.0
-            ? BarChart(
-                groupedTxValues: _groupedTxValues, getHeight: _getHeight)
+            ? BarChart(groupedTxValues: _groupedTxValues, getHeight: _getHeight)
             : const Center(
                 child: Text('Add transactions to make graph visible')));
   }

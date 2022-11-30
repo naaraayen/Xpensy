@@ -1,11 +1,10 @@
-//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../provider/transaction.dart';
 
-// ignore: must_be_immutable
 class NewTransaction extends StatefulWidget {
-  Function getTxInfo;
-  NewTransaction(this.getTxInfo, {Key? key}) : super(key: key);
+  const NewTransaction({Key? key}) : super(key: key);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -35,18 +34,19 @@ class _NewTransactionState extends State<NewTransaction>
     });
   }
 
-  void submitData(DateTime chosenDate) {
+  void submitData(DateTime chosenDate, Transaction txData) {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
     if (enteredTitle.isEmpty || enteredAmount <= 0) {
       return;
     }
-    widget.getTxInfo(enteredTitle, enteredAmount, chosenDate);
+    txData.txInfo(enteredTitle, enteredAmount, chosenDate);
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final txData = Provider.of<Transaction>(context, listen: false);
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
@@ -87,7 +87,7 @@ class _NewTransactionState extends State<NewTransaction>
             ),
             TextButton(
               onPressed: () {
-                submitData(selectedDate);
+                submitData(selectedDate, txData);
               },
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColorDark,
