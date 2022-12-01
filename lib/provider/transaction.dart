@@ -1,45 +1,115 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionItem {
-  String id;
-  String transactionName;
-  double transactionAmount;
-  DateTime dateTime;
+  late String id;
+  late String transactionName;
+  late double transactionAmount;
+  late String dateTime;
   TransactionItem(
       {required this.id,
       required this.transactionName,
       required this.transactionAmount,
       required this.dateTime});
+
+  //JSON serialization
+  //Map to Object
+  TransactionItem.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    transactionName = map['transactionName'];
+    transactionAmount = map['transactionAmount'];
+    dateTime = map['dateTime'];
+  }
+
+  //Object to Map
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'transactionName': transactionName,
+      'transactionAmount': transactionAmount,
+      'dateTime': dateTime,
+    };
+  }
 }
 
 class Transaction with ChangeNotifier {
-
-  // TODO: Implement shared preference
-  final List<TransactionItem> _tx = [];
+  var _isDataAvailable = false;
+  final List<Map<String, dynamic>> _transactionsInMap = [];
+  List<TransactionItem> _transactions = [];
 
   List<TransactionItem> get tx {
-    return _tx;
+    return _transactions;
+  }
+
+  //Converting list of map to list of object
+  void txJsonToObject() {
+    final List<TransactionItem> txData = [];
+    for (var i in _transactionsInMap) {
+      txData.add(TransactionItem.fromMap(i));
+    }
+    _transactions = txData;
+  }
+
+  bool get isDataAvailable {
+    return _isDataAvailable;
   }
 
   List<TransactionItem> get recentTransaction {
-    return _tx.where((element) {
-      return element.dateTime
+    return _transactions.where((element) {
+      return DateTime.parse(element.dateTime)
           .isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
   }
 
-  void txInfo(String getTitle, double getAmount, DateTime getPickedDate) {
-    _tx.add(TransactionItem(
-        id: DateTime.now().toString(),
-        transactionName: getTitle,
-        transactionAmount: getAmount,
-        dateTime: getPickedDate));
-        notifyListeners();
+  //Implementing Shared Prefs
+  void setPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = json.encode({
+      'txList': _transactionsInMap,
+    });
+    prefs.setString('userData', userData);
   }
 
-  void removeTx(int index) {
-    _tx.removeAt(index);
+  //Adding transactions
+  void txInfo(String getTitle, double getAmount, DateTime getPickedDate) {
+    _transactionsInMap.add(TransactionItem(
+            id: DateTime.now().toString(),
+            transactionName: getTitle,
+            transactionAmount: getAmount,
+            dateTime: getPickedDate.toString())
+        .toMap());
+    txJsonToObject();
     notifyListeners();
+    setPreferences();
+  }
+
+  //Retrieving shared transactions whenever the app loads up
+  Future<void> retrieveUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return;
+    }
+    final getUserData = prefs.getString('userData');
+    if (getUserData == null) {
+      return;
+    }
+    final extractedData = json.decode(getUserData) as Map<String, dynamic>;
+    final txDataObject = extractedData['txList'];
+    for (var element in txDataObject) {
+      _transactions.add(TransactionItem.fromMap(element));
+      _transactionsInMap.add(element);
+    }
+    _isDataAvailable = true;
+    notifyListeners();
+  }
+
+  //Removing transactions
+  void removeTx(int index) {
+    _transactions.removeAt(index);
+    _transactionsInMap.removeAt(index);
+
+    notifyListeners();
+    setPreferences();
   }
 }

@@ -22,6 +22,8 @@ class TransactionItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15.0),
       child: NeumorphicContainer(
         color: Colors.grey.shade200,
+        offset: 8,
+        blurRadius: 10,
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
           leading: NeumorphicContainer(
@@ -41,7 +43,7 @@ class TransactionItem extends StatelessWidget {
             tx[index].transactionName,
           ),
           subtitle: Text(
-            DateFormat.yMMMd().format(tx[index].dateTime),
+            DateFormat.yMMMd().format(DateTime.parse(tx[index].dateTime)),
           ),
           trailing: IconButton(
             icon: const Icon(Icons.close),

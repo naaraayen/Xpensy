@@ -5,13 +5,17 @@ class NeumorphicContainer extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final Color? color;
   final BoxShape shape;
+  final double offset;
+  final double blurRadius;
   final Widget? child;
   const NeumorphicContainer({
     super.key,
     this.child,
     this.borderRadius = 15,
-    this.padding ,
+    this.padding,
     this.color,
+    this.offset = 12,
+    this.blurRadius = 18,
     this.shape = BoxShape.rectangle,
   });
 
@@ -22,18 +26,20 @@ class NeumorphicContainer extends StatelessWidget {
       decoration: BoxDecoration(
           shape: shape,
           color: color,
-          borderRadius: shape == BoxShape.rectangle? BorderRadius.circular(borderRadius) : null,
+          borderRadius: shape == BoxShape.rectangle
+              ? BorderRadius.circular(borderRadius)
+              : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade400,
-              offset: const Offset(12, 12),
-              blurRadius: 18,
+              color: Colors.grey.shade500,
+              offset: Offset(offset, offset),
+              blurRadius: blurRadius,
               spreadRadius: 1,
             ),
-            const BoxShadow(
+            BoxShadow(
               color: Colors.white,
-              offset: Offset(-12, -12),
-              blurRadius: 18,
+              offset: Offset(-offset, -offset),
+              blurRadius: blurRadius,
               spreadRadius: 1,
             ),
           ]),

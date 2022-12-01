@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:xpensy/screens/splash_screen.dart';
 import './provider/transaction.dart';
-import 'screen/home_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const Xpensy());
@@ -19,17 +20,31 @@ class Xpensy extends StatelessWidget {
           create: (ctx) => Transaction(),
         )
       ],
-      child: MaterialApp(
-        title: 'Xpensy',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primarySwatch: Colors.blueGrey,
-            colorScheme:
-                ColorScheme.fromSwatch(accentColor: Colors.grey.shade300),
-            fontFamily: 'OpenSans',        
-                
-          ),
-        home: HomeScreen(),
+      child: Consumer<Transaction>(
+        builder: (context, txData, _) => MaterialApp(
+            title: 'Xpensy',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blueGrey,
+              colorScheme:
+                  ColorScheme.fromSwatch(accentColor: Colors.grey.shade300),
+              fontFamily: 'OpenSans',
+            ),
+            home: txData.isDataAvailable
+                ? HomeScreen()
+                : FutureBuilder(
+                    future: Future.delayed(const Duration(seconds: 2))
+                        .then((_) => txData.retrieveUserData()),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: Text('Loading ...'),
+                        );
+                      } else {
+                        return HomeScreen();
+                      }
+                    },
+                  )),
       ),
     );
   }
