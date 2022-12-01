@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:xpensy/screens/splash_screen.dart';
+import './screens/splash_screen.dart';
 import './provider/transaction.dart';
-import 'screens/home_screen.dart';
+import './screens/home_screen.dart';
 
 void main() {
   runApp(const Xpensy());
@@ -37,9 +37,7 @@ class Xpensy extends StatelessWidget {
                         .then((_) => txData.retrieveUserData()),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: Text('Loading ...'),
-                        );
+                        return const SplashScreen();
                       } else {
                         return HomeScreen();
                       }
