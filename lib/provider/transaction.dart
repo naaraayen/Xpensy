@@ -38,6 +38,10 @@ class Transaction with ChangeNotifier {
   final List<Map<String, dynamic>> _transactionsInMap = [];
   List<TransactionItem> _transactions = [];
 
+  bool get isDataAvailable {
+    return _isDataAvailable;
+  }
+
   List<TransactionItem> get tx {
     return _transactions;
   }
@@ -51,10 +55,7 @@ class Transaction with ChangeNotifier {
     _transactions = txData;
   }
 
-  bool get isDataAvailable {
-    return _isDataAvailable;
-  }
-
+  //Filtering transactions of last 7 days
   List<TransactionItem> get recentTransaction {
     return _transactions.where((element) {
       return DateTime.parse(element.dateTime)
@@ -97,9 +98,9 @@ class Transaction with ChangeNotifier {
     final extractedData = json.decode(getUserData) as Map<String, dynamic>;
     final txDataObject = extractedData['txList'];
     for (var element in txDataObject) {
-      _transactions.add(TransactionItem.fromMap(element));
       _transactionsInMap.add(element);
     }
+    txJsonToObject();
     _isDataAvailable = true;
     notifyListeners();
   }
