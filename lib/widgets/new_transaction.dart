@@ -12,6 +12,7 @@ class NewTransaction extends StatefulWidget {
 
 class _NewTransactionState extends State<NewTransaction>
     with WidgetsBindingObserver {
+  final amountFocus = FocusNode();
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   late DateTime selectedDate = DateTime.now();
@@ -29,9 +30,11 @@ class _NewTransactionState extends State<NewTransaction>
       }
       setState(() {
         checkIfSelected = true;
+
         selectedDate = pickedDate;
       });
     });
+    amountFocus.unfocus();
   }
 
   void submitData(DateTime chosenDate, Transaction txData) {
@@ -42,6 +45,14 @@ class _NewTransactionState extends State<NewTransaction>
     }
     txData.txInfo(enteredTitle, enteredAmount, chosenDate);
     Navigator.of(context).pop();
+  }
+
+  @override
+  void dispose() {
+    amountFocus.dispose();
+    titleController.dispose();
+    amountController.dispose();
+    super.dispose();
   }
 
   @override
@@ -61,15 +72,17 @@ class _NewTransactionState extends State<NewTransaction>
               decoration:
                   const InputDecoration(labelText: 'Enter transaction title'),
               controller: titleController,
-              onSubmitted: (_) => submitData,
+              onSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(amountFocus),
             ),
             TextField(
+              focusNode: amountFocus,
               keyboardType: TextInputType.number,
               maxLength: 5,
               decoration:
                   const InputDecoration(labelText: 'Enter transaction amount'),
               controller: amountController,
-              onSubmitted: (_) => submitData,
+              //onSubmitted: (_) => submitData,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
