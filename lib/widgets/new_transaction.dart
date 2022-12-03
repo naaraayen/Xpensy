@@ -82,13 +82,12 @@ class _NewTransactionState extends State<NewTransaction>
               decoration:
                   const InputDecoration(labelText: 'Enter transaction amount'),
               controller: amountController,
-              //onSubmitted: (_) => submitData,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(checkIfSelected == false
-                    ? 'No date chosen'
+                    ? 'No date chosen (default: today)'
                     : DateFormat.yMMMd().format(selectedDate).toString()),
                 TextButton(
                     onPressed: presentDatePicker,
