@@ -1,17 +1,7 @@
 # xpensy
+Xpensy is a simple  personal expenses application (built on FLutter) to manage and track your expenses of last seven days.
 
-A new Flutter project.
+Try this app here:
+https://drive.google.com/file/d/1Z_kBW2ou4DIcbBbFy2lhDMLkWA1DKYN9/view?usp=share_link
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
 # Xpensy
