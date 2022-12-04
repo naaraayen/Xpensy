@@ -36,7 +36,7 @@ class TransactionItem {
 class Transaction with ChangeNotifier {
   var _isDataAvailable = false;
   final List<Map<String, dynamic>> _transactionsInMap = [];
-  final List<TransactionItem> _transactions = [];
+  List<TransactionItem> _transactions = [];
 
   bool get isDataAvailable {
     return _isDataAvailable;
@@ -48,16 +48,18 @@ class Transaction with ChangeNotifier {
 
   //Converting list of map to list of object
   void txJsonToObject(Map<String, dynamic> getMap) {
-      _transactions.add(TransactionItem.fromMap(getMap));
-    }
+    _transactions.add(TransactionItem.fromMap(getMap));
+    notifyListeners();
+  }
 
   //Alternative Way
-  //   void txJsonToObject() {
+  // void txJsonToObject() {
   //   final List<TransactionItem> txData = [];
   //   for (var i in _transactionsInMap) {
   //     txData.add(TransactionItem.fromMap(i));
   //   }
   //   _transactions = txData;
+  //   notifyListeners();
   // }
 
   //Filtering transactions of last 7 days
@@ -86,6 +88,7 @@ class Transaction with ChangeNotifier {
             dateTime: getPickedDate.toString())
         .toMap());
     txJsonToObject(_transactionsInMap.last);
+    _isDataAvailable = true;
     notifyListeners();
     setPreferences();
   }
@@ -106,7 +109,7 @@ class Transaction with ChangeNotifier {
       _transactionsInMap.add(element);
       txJsonToObject(element);
     }
-    
+
     _isDataAvailable = true;
     notifyListeners();
   }
