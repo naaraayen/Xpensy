@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import '../provider/transaction.dart';
+
+import 'package:xpensy/bloc/transaction_bloc.dart';
+import 'package:xpensy/models/transaction_model.dart';
 
 class NewTransaction extends StatefulWidget {
-  const NewTransaction({Key? key}) : super(key: key);
+  bool isNew;
+  String? id;
+  String? title;
+  String? amount;
+  String? dateTime;
+  NewTransaction({
+    Key? key,
+    this.isNew = true,
+    this.id,
+    this.title,
+    this.amount,
+    this.dateTime,
+  }) : super(key: key);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -13,9 +26,10 @@ class NewTransaction extends StatefulWidget {
 class _NewTransactionState extends State<NewTransaction>
     with WidgetsBindingObserver {
   final amountFocus = FocusNode();
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
-  late DateTime selectedDate = DateTime.now();
+  late TextEditingController titleController;
+  late TextEditingController amountController;
+
+  late String selectedDate;
   late bool checkIfSelected = false;
 
   presentDatePicker() {
@@ -31,20 +45,40 @@ class _NewTransactionState extends State<NewTransaction>
       setState(() {
         checkIfSelected = true;
 
-        selectedDate = pickedDate;
+        selectedDate = pickedDate.toString().split(' ').first;
+        widget.dateTime = selectedDate;
       });
     });
     amountFocus.unfocus();
   }
 
-  void submitData(DateTime chosenDate, Transaction txData) {
+  void submitData(String chosenDate, TransactionBloc txData) {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
     if (enteredTitle.isEmpty || enteredAmount <= 0) {
       return;
     }
-    txData.txInfo(enteredTitle, enteredAmount, chosenDate);
+    final tx = TransactionModel(
+        id: widget.id ?? DateTime.now().toIso8601String(),
+        transactionName: enteredTitle,
+        transactionAmount: enteredAmount,
+        dateTime: chosenDate.toString().split(' ').first);
+    if (!widget.isNew) {
+      txData.add(TransactionEdit(transaction: tx, id: tx.id));
+      Navigator.of(context).pop();
+      return;
+    }
+    txData.add(TransactionAdd(transaction: tx));
     Navigator.of(context).pop();
+  }
+
+  @override
+  void initState() {
+    selectedDate =
+        widget.dateTime ?? DateTime.now().toString().split(' ').first;
+    titleController = TextEditingController(text: widget.title);
+    amountController = TextEditingController(text: widget.amount);
+    super.initState();
   }
 
   @override
@@ -57,7 +91,7 @@ class _NewTransactionState extends State<NewTransaction>
 
   @override
   Widget build(BuildContext context) {
-    final txData = Provider.of<Transaction>(context, listen: false);
+    final txData = context.read<TransactionBloc>();
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
@@ -86,9 +120,10 @@ class _NewTransactionState extends State<NewTransaction>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(checkIfSelected == false
-                    ? 'No date chosen (default: today)'
-                    : DateFormat.yMMMd().format(selectedDate).toString()),
+                Text(widget.dateTime ??
+                    (checkIfSelected == false
+                        ? 'No date chosen (default: today)'
+                        : selectedDate)),
                 TextButton(
                     onPressed: presentDatePicker,
                     child: Text(
@@ -104,9 +139,9 @@ class _NewTransactionState extends State<NewTransaction>
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColorDark,
               ),
-              child: const Text(
-                'Add transaction',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                widget.isNew? 'Add transaction' : 'Update transaction',
+                style: const TextStyle(color: Colors.white),
               ),
             )
           ],

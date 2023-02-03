@@ -14,8 +14,8 @@ class NeumorphicContainer extends StatelessWidget {
     this.borderRadius = 15,
     this.padding,
     this.color,
-    this.offset = 12,
-    this.blurRadius = 18,
+    this.offset = 2,
+    this.blurRadius = 6,
     this.shape = BoxShape.rectangle,
   });
 

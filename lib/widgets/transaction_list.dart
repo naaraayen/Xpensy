@@ -1,36 +1,48 @@
 import 'package:flutter/material.dart';
-import '../provider/transaction.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:xpensy/bloc/transaction_bloc.dart';
 import '../widgets/transaction_item.dart' as ti;
 
-// ignore: must_be_immutable
 class TransactionList extends StatelessWidget {
-  final List<TransactionItem> tx;
-  const TransactionList(this.tx, {Key? key}) : super(key: key);
+  const TransactionList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<TransactionBloc, TransactionState>(
+        builder: (context, state) {
+      if (state is TransactionLoaded) {
+        return state.transactionList.isNotEmpty
+            ? ListView.builder(
+                itemBuilder: ((context, index) {
+                  return ti.TransactionItem(
+                    tx: state.transactionList,
+                    index: index,
+                  );
+                }),
+                itemCount: state.transactionList.length,
+              )
+            : Center(
+              child: SizedBox(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          height: 175,
+                          width: 175,
+                          child: Image.asset(
+                            'assets/illustrations/empty_list.png',
+                          )),
+                      const SizedBox(height: 10),
+                      const Text('No transactions found'),
+                    ],
+                  ),
+              ),
+            );
+      }
 
-    return tx.isNotEmpty
-        ? ListView.builder(
-            itemBuilder: ((context, index) {
-              return ti.TransactionItem(
-                tx: tx,
-                index: index,
-              );
-            }),
-            itemCount: tx.length,
-          )
-        : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 175,
-              width: 175,
-              child: Image.asset('assets/illustrations/empty_list.png', )),
-              const SizedBox(height: 10),
-            const Text('No transactions found'),
-          ],
-        );
+      return const Center(
+        child: Text('Something Went Wrong'),
+      );
+    });
   }
 }

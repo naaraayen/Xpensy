@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../provider/transaction.dart';
+import 'package:xpensy/widgets/transaction_item.dart';
+
 import '../widgets/bar_chart.dart';
 import '../widgets/neumorphic_container.dart';
 
@@ -25,13 +26,6 @@ class Chart extends StatelessWidget {
   }
 
   double get _totalSpending {
-    //alternative way
-    // double totalSpending = 0;
-    // for (var i = 0; i < groupedTxValues.length; i++) {
-    //   totalSpending =
-    //       totalSpending + double.parse(groupedTxValues[i]['amount'].toString());
-    // }
-    // return totalSpending;
     return _groupedTxValues.fold(0.0, (sum, element) {
       return sum + (element['amount'] as double);
     });
@@ -44,6 +38,8 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NeumorphicContainer(
+        offset: 2,
+        blurRadius: 4,
         color: Colors.grey.shade200,
         padding: const EdgeInsets.all(10),
         child: _totalSpending != 0.0

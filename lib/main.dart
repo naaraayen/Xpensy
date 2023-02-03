@@ -1,49 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import './screens/splash_screen.dart';
-import './provider/transaction.dart';
-import './screens/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+import 'package:xpensy/bloc/transaction_bloc.dart';
+import './screens/home_screen.dart';
+import './screens/splash_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: await getApplicationDocumentsDirectory());
   runApp(const Xpensy());
 }
 
-// ignore: must_be_immutable
 class Xpensy extends StatelessWidget {
   const Xpensy({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => Transaction(),
-        )
+        BlocProvider(create: (context) => TransactionBloc()),
       ],
-      child: Consumer<Transaction>(
-        builder: (context, txData, _) => MaterialApp(
-            title: 'Xpensy',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primarySwatch: Colors.blueGrey,
-              colorScheme:
-                  ColorScheme.fromSwatch(accentColor: Colors.grey.shade300),
-              fontFamily: 'OpenSans',
-            ),
-            home: txData.isDataAvailable
-                ? HomeScreen()
-                : FutureBuilder(
-                    future: Future.delayed(const Duration(seconds: 2))
-                        .then((_) => txData.retrieveUserData()),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SplashScreen();
-                      } else {
-                        return HomeScreen();
-                      }
-                    },
-                  )),
-      ),
+      child: MaterialApp(
+          title: 'Xpensy',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blueGrey,
+            colorScheme:
+                ColorScheme.fromSwatch(accentColor: Colors.grey.shade300),
+            fontFamily: 'OpenSans',
+          ),
+          home: FutureBuilder(
+            future: Future.delayed(const Duration(seconds: 2)),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SplashScreen();
+              }
+              return const HomeScreen();
+            },
+          )),
     );
   }
 }
